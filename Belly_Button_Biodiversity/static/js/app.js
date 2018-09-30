@@ -1,3 +1,6 @@
+// read instructions wrong
+// built not needed function
+// keeping it in code if i ever want to use it in the future
 function ArrtoDict (blah){
   var foo = [];
   var keys = Object.keys(blah);
@@ -12,14 +15,12 @@ function ArrtoDict (blah){
   }
   return foo
 }
-// a = {"a":[1,2,3], 'c':[3,4,5]}
-// console.log(ArrtoDict(a))
 
 function buildMetadata(sample) {
   // @TODO: Complete the following function that builds the metadata panel
 
   // Use `d3.json` to fetch the metadata for a sample
-  d3.json('/samples/'+sample).then((sampledata) => {
+  d3.json('/metadata/'+sample).then((sampledata) => {
 
     // Use d3 to select the panel with id of `#sample-metadata`
     var paneldata = d3.select('#sample-metadata');
@@ -29,29 +30,20 @@ function buildMetadata(sample) {
     // Use `Object.entries` to add each key and value pair to the panel
     // Hint: Inside the loop, you will need to use d3 to append new
     // tags for each key-value in the metadata.
-    // for (let [key, value] of Object.entries(sampledata)) {
-    // console.log(key + ':' + value);
-    var newSampleData = ArrtoDict(sampledata);
-    var table = paneldata.append("table");
-    var thead = table.append('thead')
-      .html(function() {
-        return `<th>${'ids'}</th><th>${'labels'}</th><th>${'sample values'}</th>`;
+    paneldata.selectAll('div')
+      .data(Object.entries(sampledata))
+      .enter()
+      .append("div")
+      .html(entry => {
+        return entry[0] + ' : ' + entry[1];
       });
-    var tbody = table.append('tbody')
-      .selectAll('tr')
-      .data(newSampleData).enter()
-      .append("tr")
-      .html(function(d) {
-      return `<td>${d.otu_ids}</td><td>${d.otu_labels}</td><td>${d.sample_values}</td>`;
-    });
+  });
 
 
     // BONUS: Build the Gauge Chart
     // buildGauge(data.WFREQ);
-    // }
 
-  // console.log('test');
-  })
+
 }
 
 function buildCharts(sample) {
